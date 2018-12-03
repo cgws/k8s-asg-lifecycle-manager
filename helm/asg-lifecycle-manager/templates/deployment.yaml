@@ -1,15 +1,28 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.service.name }}
+  name: {{ template "app.fullname" . }}
   labels:
+    app: {{ template "app.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "app.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
       labels:
-        app: {{ .Values.service.name }}
+        app: {{ template "app.name" . }}
+        release: {{ .Release.Name }}
     spec:
       imagePullSecrets:
       - name: docker-registry-logicmonitor-net
@@ -25,27 +38,29 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: NODEMAN_AWS_REGION
-          value: "{{ .Values.service.awsRegion }}"
+          value: "{{ .Values.awsRegion }}"
         - name: NODEMAN_AWS_SQS_QUEUE_URL
-          value: "{{ .Values.service.awsSqsQueueURL }}"
+          value: "{{ .Values.awsSqsQueueURL }}"
         - name: NODEMAN_DEBUG
-          value: "{{ .Values.service.debug }}"
+          value: "{{ .Values.debug }}"
         ports:
-        - containerPort: {{ .Values.service.port }}
+        - containerPort: {{ .Values.service.metrics.port }}
         readinessProbe:
           httpGet:
             path: /
-            port: {{ .Values.service.port }}
+            port: {{ .Values.service.metrics.port }}
           initialDelaySeconds: 15
           periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /
-            port: {{ .Values.service.port }}
+            port: {{ .Values.service.metrics.port }}
           initialDelaySeconds: 15
           periodSeconds: 5
         resources:
           requests:
-            memory: "250Mi"
+            cpu: 10m
+            memory: "25Mi"
           limits:
-            memory: "250Mi"
+            cpu: 50m
+            memory: "50Mi"

@@ -1,0 +1,16 @@
+replicaCount: 1
+image:
+  repository: logicmonitor/k8s-asg-lifecycle-manager
+  pullPolicy: IfNotPresent
+  tag: latest
+
+awsRegion: ap-southeast-2
+sqsQueueUrl: https://sqs.ap-southeast-2.amazonaws.com/acctno/queue-name
+debug: false
+
+podAnnotations: {}
+
+service:
+  metrics:
+    type: ClusterIP
+    port: 8080
