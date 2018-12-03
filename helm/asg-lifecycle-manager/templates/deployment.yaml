@@ -40,7 +40,7 @@ spec:
         - name: NODEMAN_AWS_REGION
           value: "{{ .Values.awsRegion }}"
         - name: NODEMAN_AWS_SQS_QUEUE_URL
-          value: "{{ .Values.awsSqsQueueURL }}"
+          value: "{{ .Values.sqsQueueURL }}"
         - name: NODEMAN_DEBUG
           value: "{{ .Values.debug }}"
         ports:
