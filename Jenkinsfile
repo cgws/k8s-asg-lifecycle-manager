@@ -30,7 +30,7 @@ pipeline {
             sh '''
                cd helm
                helm package asg-lifecycle-manager
-               helm s3 push --force asg-lifecycle-manager*.tgz cgws-helm-testing
+               helm s3 push --force asg-lifecycle-manager*.tgz cgws-helm-stable
                '''
           }
         }
