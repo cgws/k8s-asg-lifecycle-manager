@@ -1,6 +1,6 @@
 FROM golang:1.8.7-alpine3.6 AS build
 RUN apk --update add curl
-ENV KUBERNETES_VERSION="v1.9.3"
+ENV KUBERNETES_VERSION="v1.17.12"
 WORKDIR $GOPATH/src/github.com/logicmonitor/k8s-asg-lifecycle-manager
 COPY ./ ./
 RUN go build -o /asg-lifecycle-manager
